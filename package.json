@@ -1,0 +1,20 @@
+{
+  "name": "plotportal",
+  "version": "0.0.1",
+  "description": "Virtual parallax perspective for plot.ly 3d plots via face tracking",
+  "main": "index.js",
+  "author": "William Murphy",
+  "license": "MIT",
+  "scripts": {
+    "dev": "budo examples/main.js:build.js --dir examples --port 8000 --live --open",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "plotly.js-dist": "^1.45.1",
+    "tracking": "eduardolundgren/tracking.js#ee5503cd892d2b15c6e1dcde80adce787b7e391b"
+  },
+  "devDependencies": {
+    "budo": "^11.6.1"
+  },
+  "peerDependencies": {}
+}

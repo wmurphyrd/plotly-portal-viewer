@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="build.js"></script>
+    <style>
+      .cl-video-passthrough {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="myDiv"></div>
+    <video id="myVideo" class="cl-video-passthrough" width="320" height="240" preload muted autoplay webkit-playsinline playsinline></video>
+    <canvas id="myDebugCanvas" class="cl-video-passthrough" width="320" height="240"></canvas>
+  </body>
+  <script src="example-plot.js"></script>
+  <script src="example.js"></script>
+</html>
