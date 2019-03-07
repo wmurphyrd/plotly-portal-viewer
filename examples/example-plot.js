@@ -30,6 +30,7 @@ window.Plotly.d3.csv('./iris.csv', function (err, rows) {
       t: 0
     },
     scene: {
+      aspectmode: 'cube',
       camera: {
         eye: {
           x: 0,

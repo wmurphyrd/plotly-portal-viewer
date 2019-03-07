@@ -10,9 +10,6 @@ module.exports = class FaceTrackingCamera {
     this.cameraSettings.smoothingDecay = this.cameraSettings.smoothingDecay || 300
     this.cameraSettings.forecastStart = this.cameraSettings.forecastStart || 22
     this.cameraSettings.forecastEnd = this.cameraSettings.forecastEnd || 500
-    const camStart = plotEl.layout.scene.camera
-    this.cameraSettings.eyeStart = { x: camStart.eye.x, y: camStart.eye.y, z: camStart.eye.z }
-    this.cameraSettings.centerStart = { x: camStart.center.x, y: camStart.center.y, z: camStart.center.z }
 
     this.trackerSettings = trackerSettings || {}
     this.trackerSettings.trackerInitialScale = this.trackerSettings.trackerInitialScale || 2.5
@@ -36,20 +33,25 @@ module.exports = class FaceTrackingCamera {
         }
       }
     }
+    window.Plotly.react(plotEl, plotEl.data, plotEl.layout, {
+      modeBarButtonsToAdd: [{
+        name: 'Magic Portal View',
+        icon: {
+          width: 1000,
+          height: 1000,
+          path: 'M336 0H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zM192 128c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64zm112 236.8c0 10.6-10 19.2-22.4 19.2H102.4C90 384 80 375.4 80 364.8v-19.2c0-31.8 30.1-57.6 67.2-57.6h5c12.3 5.1 25.7 8 39.8 8s27.6-2.9 39.8-8h5c37.1 0 67.2 25.8 67.2 57.6v19.2z',
+          transform: 'matrix(1.9 0 0 1.75 0 100)'
+        },
+        click: this.handleClick.bind(this)
+      }]
+    })
   }
-
-  startTracking () {
-    const decay = this.cameraSettings.smoothingDecay
-    this.x = MovingAverage(decay)
-    this.y = MovingAverage(decay * 10)
-    this.z = MovingAverage(decay)
-
-    this.tracker = new window.tracking.ObjectTracker('face')
-    this.tracker.setInitialScale(this.trackerSettings.trackerInitialScale)
-    this.tracker.setStepSize(this.trackerSettings.trackerStepSize)
-    this.tracker.setEdgesDensity(this.trackerSettings.trackerEdgesDensity)
-    window.tracking.track(this.videoEl, this.tracker, { camera: true })
-    this.tracker.on('track', this.onTracked.bind(this))
+  handleClick (event) {
+    if (this.isTracking) {
+      this.stopTracking()
+    } else {
+      this.startTracking()
+    }
   }
 
   onTracked (event) {
@@ -83,7 +85,7 @@ module.exports = class FaceTrackingCamera {
     ) {
       return
     }
-    const camPosition = this.plotUpdater.scene.camera.eye
+    const camPosition = this.plotEl.layout.scene.camera.eye
     // const centerPosition = this.plotUpdater.scene.camera.center
     // const centerStart = this.cameraSettings.centerStart
     const eyeStart = this.cameraSettings.eyeStart
@@ -112,6 +114,43 @@ module.exports = class FaceTrackingCamera {
     // )
     // object3D.translateZ(-zma * this.data.range.z + this.halfRange.z)
     this.timeOfLastUpdate = now
-    window.Plotly.relayout('myDiv', this.plotUpdater)
+    window.Plotly.relayout('myDiv', this.plotEl.layout)
+  }
+
+  startTracking () {
+    const decay = this.cameraSettings.smoothingDecay
+    this.x = MovingAverage(decay)
+    // depth is jumpier, add extra smoothing
+    this.y = MovingAverage(decay * 3)
+    this.z = MovingAverage(decay)
+
+    const camStart = this.plotEl.layout.scene.camera
+    this.cameraSettings.eyeStart = { x: camStart.eye.x, y: camStart.eye.y, z: camStart.eye.z }
+    this.cameraSettings.centerStart = { x: camStart.center.x, y: camStart.center.y, z: camStart.center.z }
+
+    if (this.trackerTask) {
+      this.trackerTask.run()
+    } else {
+      this.tracker = new window.tracking.ObjectTracker('face')
+      this.tracker.setInitialScale(this.trackerSettings.trackerInitialScale)
+      this.tracker.setStepSize(this.trackerSettings.trackerStepSize)
+      this.tracker.setEdgesDensity(this.trackerSettings.trackerEdgesDensity)
+      this.tracker.on('track', this.onTracked.bind(this))
+      this.trackerTask = window.tracking.track(this.videoEl, this.tracker, { camera: true })
+    }
+    this.isTracking = true
+    this.previousDragMode = this.plotEl.layout.scene.dragmode
+    this.plotEl.layout.scene.dragmode = false
+  }
+
+  stopTracking () {
+    this.isTracking = false
+    if (this.trackerTask) {
+      this.trackerTask.stop()
+    }
+    this.plotEl.layout.scene.dragmode = this.previousDragMode == null
+      ? 'turntable'
+      : this.previousDragMode
+    window.Plotly.relayout(this.plotEl, this.plotEl.layout)
   }
 }
