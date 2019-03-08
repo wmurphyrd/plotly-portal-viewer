@@ -6,7 +6,7 @@ module.exports = class FaceTrackingCamera {
     }
 
     this.cameraSettings = cameraSettings || {}
-    this.cameraSettings.range = this.cameraSettings.range || { x: 2, y: 2, z: 2 }
+    this.cameraSettings.range = this.cameraSettings.range || { x: 3, y: 3, z: 3 }
     this.cameraSettings.smoothingDecay = this.cameraSettings.smoothingDecay || 300
     this.cameraSettings.forecastStart = this.cameraSettings.forecastStart || 22
     this.cameraSettings.forecastEnd = this.cameraSettings.forecastEnd || 500
@@ -46,11 +46,16 @@ module.exports = class FaceTrackingCamera {
       }]
     })
   }
-  handleClick (event) {
+  handleClick (plot, event) {
+    const btn = event.currentTarget
     if (this.isTracking) {
       this.stopTracking()
+      btn.classList.remove('cl-face-tracking-active')
+      btn.querySelector('path').style.fill = ''
     } else {
       this.startTracking()
+      btn.classList.add('cl-face-tracking-active')
+      btn.querySelector('path').style.fill = 'rgba(68, 68, 68, 0.7)'
     }
   }
 
@@ -94,25 +99,11 @@ module.exports = class FaceTrackingCamera {
 
     center.x = (face.x + face.width / 2) / webcam.width
     center.y = (face.y + face.height / 2) / webcam.height
-    const size = Math.sqrt(Math.pow(face.width / webcam.width, 2) + Math.pow(face.height / webcam.height, 2))
     const x = this.x.push(now, center.x)
     const z = this.z.push(now, center.y)
-    const y = this.y.push(now, size)
     camPosition.x = eyeStart.x - x * range.x + range.x / 2
     camPosition.z = eyeStart.z - z * range.z + range.z / 2
-    camPosition.y = eyeStart.y + y * range.y - range.y / 2
-    // centerPosition.x = centerStart.x - x + 0.5
-    // centerPosition.x = centerStart.x
-    // centerPosition.z = centerStart.z - z + 0.5
-    // centerPosition.z = centerStart.z
-    // centerPosition.y = centerStart.y
-
-    // camPosition.y = start.y
-    // const zma = this.z.push(
-    //   now,
-    //   Math.sqrt(Math.pow(size.x, 2) + Math.pow(size.y, 2))
-    // )
-    // object3D.translateZ(-zma * this.data.range.z + this.halfRange.z)
+    camPosition.y = eyeStart.y
     this.timeOfLastUpdate = now
     window.Plotly.relayout('myDiv', this.plotEl.layout)
   }
