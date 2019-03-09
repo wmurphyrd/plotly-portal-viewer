@@ -1,5 +1,9 @@
-const MovingAverage = require('./moving-average.js')
-module.exports = class FaceTrackingCamera {
+import MovingAverage from './moving-average.js'
+import { Matrix4 } from 'three/src/math/Matrix4'
+import { Quaternion } from 'three/src/math/Quaternion'
+import { Vector3 } from 'three/src/math/Vector3'
+
+class FaceTrackingCamera {
   constructor (plotEl, videoEl, cameraSettings, trackerSettings, debugCanvas) {
     if (!plotEl || !plotEl.layout) {
       throw new Error('FaceTrackingCamera requires a rendered plotly element')
@@ -24,15 +28,12 @@ module.exports = class FaceTrackingCamera {
       this.context = this.canvas.getContext('2d')
     }
 
-    this.center = { x: 0, y: 0 }
-    this.plotUpdater = {
-      scene: {
-        camera: {
-          eye: { x: 0, y: 0, z: 0 } // ,
-          // center: {x: 0, y: 0, z: 0}
-        }
-      }
-    }
+    this.faceCenter = { x: 0, y: 0 }
+
+    this.mat = new Matrix4()
+    this.vec = new Vector3()
+    this.target = new Vector3()
+    this.quat = new Quaternion()
     window.Plotly.react(plotEl, plotEl.data, plotEl.layout, {
       modeBarButtonsToAdd: [{
         name: 'Magic Portal View',
@@ -90,32 +91,42 @@ module.exports = class FaceTrackingCamera {
     ) {
       return
     }
-    const camPosition = this.plotEl.layout.scene.camera.eye
-    // const centerPosition = this.plotUpdater.scene.camera.center
-    // const centerStart = this.cameraSettings.centerStart
+    const camPosition = this.plotEl._fullLayout.scene.camera.eye
+    const centerPosition = this.plotEl._fullLayout.scene.camera.center
+    const up = this.plotEl._fullLayout.scene.camera.up
     const eyeStart = this.cameraSettings.eyeStart
-    const center = this.center
+    const faceCenter = this.faceCenter
     const range = this.cameraSettings.range
 
-    center.x = (face.x + face.width / 2) / webcam.width
-    center.y = (face.y + face.height / 2) / webcam.height
-    const x = this.x.push(now, center.x)
-    const z = this.z.push(now, center.y)
-    camPosition.x = eyeStart.x - x * range.x + range.x / 2
-    camPosition.z = eyeStart.z - z * range.z + range.z / 2
-    camPosition.y = eyeStart.y
+    faceCenter.x = (face.x + face.width / 2) / webcam.width
+    faceCenter.y = (face.y + face.height / 2) / webcam.height
+    const x = this.x.push(now, faceCenter.x)
+    const z = this.z.push(now, faceCenter.y)
+    this.target.copy(eyeStart)
+    this.mat.lookAt(this.target, centerPosition, up)
+    this.quat.setFromRotationMatrix(this.mat)
+    this.vec.set(1, 0, 0)
+    this.vec.applyQuaternion(this.quat)
+    this.vec.multiplyScalar(-x * range.x + range.x / 2)
+    this.target.add(this.vec)
+    // applying z translation along y axis due to plotly using z as up
+    this.vec.set(0, 1, 0)
+    this.vec.applyQuaternion(this.quat)
+    this.vec.multiplyScalar(eyeStart.z - z * range.z + range.z / 2)
+    this.target.add(this.vec)
+    camPosition.x = this.target.x
+    camPosition.z = this.target.z
+    camPosition.y = this.target.y
     this.timeOfLastUpdate = now
-    window.Plotly.relayout('myDiv', this.plotEl.layout)
+    window.Plotly.relayout('myDiv', 'scene.camera.eye', camPosition)
   }
 
   startTracking () {
     const decay = this.cameraSettings.smoothingDecay
     this.x = MovingAverage(decay)
-    // depth is jumpier, add extra smoothing
-    this.y = MovingAverage(decay * 3)
     this.z = MovingAverage(decay)
 
-    const camStart = this.plotEl.layout.scene.camera
+    const camStart = this.plotEl._fullLayout.scene.camera
     this.cameraSettings.eyeStart = { x: camStart.eye.x, y: camStart.eye.y, z: camStart.eye.z }
     this.cameraSettings.centerStart = { x: camStart.center.x, y: camStart.center.y, z: camStart.center.z }
 
@@ -145,3 +156,4 @@ module.exports = class FaceTrackingCamera {
     window.Plotly.relayout(this.plotEl, this.plotEl.layout)
   }
 }
+export default FaceTrackingCamera

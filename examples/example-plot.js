@@ -14,10 +14,10 @@ window.Plotly.d3.csv('./iris.csv', function (err, rows) {
     marker: {
       size: 12,
       line: {
-        color: 'rgb(217, 217, 217)',
-        width: 0.5
+        width: 0
       },
-      opacity: 0.8 },
+      opacity: 1
+    },
     type: 'scatter3d'
   }
 
