@@ -1,8 +1,8 @@
 import MovingAverage from './moving-average.js'
+import StyleSheet from './dyss.js'
 import { Matrix4 } from 'three/src/math/Matrix4'
 import { Quaternion } from 'three/src/math/Quaternion'
 import { Vector3 } from 'three/src/math/Vector3'
-import StyleSheet from './dyss'
 
 const sheet = new StyleSheet()
 // css classes
@@ -13,7 +13,8 @@ const classVideoActive = 'cl-face-tracking-video-active'
 const classTrackingBtnActive = 'cl-face-tracking-button-active'
 const classVideoBtnActive = 'cl-face-tracking-video-button-active'
 
-const passthroughBtnName = 'Magic Portal Camera'
+const activateButtonName = 'Portal View (Webcam Face Tracking)'
+const passthroughBtnName = 'Show Webcam Tracking'
 sheet.add(`.${classTrackingBtnActive} path, .${classVideoBtnActive} path`, {
   fill: 'rgba(68, 68, 68, 0.7) !important' // override plotly's id based selector
 })
@@ -41,7 +42,7 @@ sheet.add(`.${classVideoContainer}.${classTrackingActive}.${classVideoActive}`, 
   pointerEvents: 'auto'
 })
 
-class FaceTrackingCamera {
+class PortalViewer {
   constructor (cameraSettings, trackerSettings) {
     this.cameraSettings = cameraSettings || {}
     this.cameraSettings.range = this.cameraSettings.range || { x: 3, y: 3, z: 3 }
@@ -78,7 +79,7 @@ class FaceTrackingCamera {
       plotEl = document.getElementById(plotEl)
     }
     if (!plotEl || !plotEl._context) {
-      throw new Error('FaceTrackingCamera requires a rendered plotly element')
+      throw new Error('PortalViewer requires a rendered plotly element')
     }
     this.plotEl = plotEl
     // extend the current config to avoid clobbering existing settings
@@ -223,4 +224,4 @@ class FaceTrackingCamera {
     window.Plotly.relayout(this.plotEl, this.plotEl.layout)
   }
 }
-export default FaceTrackingCamera
+export default PortalViewer
