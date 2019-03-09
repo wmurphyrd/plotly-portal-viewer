@@ -74,34 +74,38 @@ class FaceTrackingCamera {
   }
 
   addToPlot (plotEl) {
-    if (!plotEl || !plotEl.layout) {
+    if (Object.prototype.toString.call(plotEl) === '[object String]') {
+      plotEl = document.getElementById(plotEl)
+    }
+    if (!plotEl || !plotEl._context) {
       throw new Error('FaceTrackingCamera requires a rendered plotly element')
     }
     this.plotEl = plotEl
-    window.Plotly.react(plotEl, plotEl.data, plotEl.layout, {
-      modeBarButtonsToAdd: [[
-        {
-          name: passthroughBtnName,
-          icon: {
-            width: 1000,
-            height: 1000,
-            path: 'M336 0H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zM192 128c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64zm112 236.8c0 10.6-10 19.2-22.4 19.2H102.4C90 384 80 375.4 80 364.8v-19.2c0-31.8 30.1-57.6 67.2-57.6h5c12.3 5.1 25.7 8 39.8 8s27.6-2.9 39.8-8h5c37.1 0 67.2 25.8 67.2 57.6v19.2z',
-            transform: 'matrix(1.9 0 0 1.75 0 100)'
-          },
-          click: this.handlePassthroughClick.bind(this)
+    // extend the current config to avoid clobbering existing settings
+    plotEl._context.modeBarButtonsToAdd.push([
+      {
+        name: passthroughBtnName,
+        icon: {
+          width: 1000,
+          height: 1000,
+          path: 'M336 0H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zM192 128c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64zm112 236.8c0 10.6-10 19.2-22.4 19.2H102.4C90 384 80 375.4 80 364.8v-19.2c0-31.8 30.1-57.6 67.2-57.6h5c12.3 5.1 25.7 8 39.8 8s27.6-2.9 39.8-8h5c37.1 0 67.2 25.8 67.2 57.6v19.2z',
+          transform: 'matrix(1.9 0 0 1.75 0 100)'
         },
-        {
-          name: 'Magic Portal View',
-          icon: {
-            width: 1000,
-            height: 1000,
-            path: 'M448 32c-83.3 11-166.8 22-250 33-92 12.5-163.3 86.7-169 180-3.3 55.5 18 109.5 57.8 148.2L0 480c83.3-11 166.5-22 249.8-33 91.8-12.5 163.3-86.8 168.7-179.8 3.5-55.5-18-109.5-57.7-148.2L448 32zm-79.7 232.3c-4.2 79.5-74 139.2-152.8 134.5-79.5-4.7-140.7-71-136.3-151 4.5-79.2 74.3-139.3 153-134.5 79.3 4.7 140.5 71 136.1 151z',
-            transform: 'matrix(1.75 0 0 1.75 0 100)'
-          },
-          click: this.handleActivationClick.bind(this)
-        }
-      ]]
-    })
+        click: this.handlePassthroughClick.bind(this)
+      },
+      {
+        name: activateButtonName,
+        icon: {
+          width: 1000,
+          height: 1000,
+          path: 'M448 32c-83.3 11-166.8 22-250 33-92 12.5-163.3 86.7-169 180-3.3 55.5 18 109.5 57.8 148.2L0 480c83.3-11 166.5-22 249.8-33 91.8-12.5 163.3-86.8 168.7-179.8 3.5-55.5-18-109.5-57.7-148.2L448 32zm-79.7 232.3c-4.2 79.5-74 139.2-152.8 134.5-79.5-4.7-140.7-71-136.3-151 4.5-79.2 74.3-139.3 153-134.5 79.3 4.7 140.5 71 136.1 151z',
+          transform: 'matrix(1.75 0 0 1.75 0 100)'
+        },
+        click: this.handleActivationClick.bind(this)
+      }
+    ])
+
+    window.Plotly.react(plotEl, plotEl.data, plotEl.layout, plotEl._context)
   }
 
   drawDebugRectangles (event) {

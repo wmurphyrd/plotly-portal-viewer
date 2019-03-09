@@ -27,7 +27,7 @@ window.Plotly.d3.csv('./iris.csv', function (err, rows) {
       l: 0,
       r: 0,
       b: 0,
-      t: 0
+      t: 30
     },
     scene: {
       aspectmode: 'cube',
@@ -43,8 +43,13 @@ window.Plotly.d3.csv('./iris.csv', function (err, rows) {
           z: 0
         }
       }
+    },
+    title: 'Magic Portal Face Tracking',
+    font: {
+      color: '#666'
     }
   }
-  window.Plotly.newPlot('myDiv', data, layout)
+  // inital layout and config settings are preserved when adding portal view
+  window.Plotly.newPlot('myDiv', data, layout, { responsive: true })
   window.dispatchEvent(new window.CustomEvent('plotted'))
 })
