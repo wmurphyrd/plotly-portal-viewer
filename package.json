@@ -13,6 +13,7 @@
     "dist": "rollup -c"
   },
   "dependencies": {
+    "dyss": "^0.0.1",
     "plotly.js-dist": "^1.45.1",
     "three": "^0.102.1",
     "tracking": "eduardolundgren/tracking.js#ee5503cd892d2b15c6e1dcde80adce787b7e391b"

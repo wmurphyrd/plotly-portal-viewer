@@ -1008,6 +1008,11 @@ duplexer2@^0.1.2, duplexer2@~0.1.0, duplexer2@~0.1.2:
   dependencies:
     readable-stream "^2.0.2"
 
+dyss@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/dyss/-/dyss-0.0.1.tgz#6fc1efcbc385999c238e08fc561f7a31095d207b"
+  integrity sha1-b8Hvy8OFmZwjjgj8Vh96MQldIHs=
+
 ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
