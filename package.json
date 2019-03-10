@@ -10,6 +10,7 @@
     "dev": "concurrently \"npm run build\" \"npm run start\"",
     "start": "budo examples/main.js:build.js --dir examples --port 8000 --live --open",
     "build": "rollup -c --watch",
+    "build:example": "browserify examples/main.js -o examples/build.js",
     "dist": "rollup -c && rollup -c rollup.config.prod.js"
   },
   "dependencies": {
