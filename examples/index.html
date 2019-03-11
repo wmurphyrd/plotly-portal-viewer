@@ -11,9 +11,26 @@
       #myDiv {
         height: 100vh;
       }
+      #id-buttons {
+        display: flex;
+        justify-content: center;
+      }
+      #id-buttons button {
+        margin: 5px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: large;
+      }
+      #id-buttons button:hover {
+        background-color: lightsteelblue;
+      }
+
     </style>
   </head>
   <body>
+    <div id="id-buttons">
+      <button id="id-activate-button">Toggle Portal View</button>
+    </div>
     <div id="myDiv"></div>
     <video id="myVideo" class="cl-video-passthrough" width="320" height="240" preload muted autoplay webkit-playsinline playsinline></video>
     <canvas id="myDebugCanvas" class="cl-video-passthrough" width="320" height="240"></canvas>

@@ -73,15 +73,15 @@ Property | Description
 ---|---
 plot | Either an element object for a plot or a string containing the id of one. Required.
 
-### startTracking
+### toggleTracking
 
-`.startTracking()`
+`.toggleTracking()`
 
-Initialize or resume running face recognition tracking on the webcam feed and updating the 3D scene camera accordingly. Called when the Portal View modebar button is toggled on.
+Manually activate or deactivate tracking. Updates the corresponding modebar button state.
 
-### stopTracking
+### toggleVideo
 
-`.stopTracking()`
+`.toggleVideo()`
 
-Pause face recognition and camera updates. Called when the Portal View modebar button is toggled off.
+Manually activate or deactive video passthorugh. Updates the corresponding modebar button state. Video will only be visible when tracking is also active.
 

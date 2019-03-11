@@ -6,6 +6,11 @@ window.addEventListener('DOMContentLoaded', () => {
   // passed to newPlot().then to run after first plotting complete
   function addPortalViewerAfterFirstPlot () {
     myPortalViewer.addToPlot('myDiv')
+    // PortalViewer adds modebar buttons, but you can also control it directly
+    myPortalViewer.toggleVideo() // Sets video passthrough to be on by default
+    document.getElementById('id-activate-button').addEventListener('click', () => {
+      myPortalViewer.toggleTracking()
+    })
   }
 
   // Build a plot

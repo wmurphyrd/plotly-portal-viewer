@@ -5870,30 +5870,12 @@
       });
     }
 
-    handleActivationClick (plot, event) {
-      const btn = event.currentTarget;
-      if (this.isTracking) {
-        this.stopTracking();
-        btn.classList.remove(classTrackingBtnActive);
-        btn.parentElement.classList.remove(classModebarActive);
-        this.videoContainer.classList.remove(classTrackingActive);
-      } else {
-        this.startTracking();
-        btn.classList.add(classTrackingBtnActive);
-        btn.parentElement.classList.add(classModebarActive);
-        this.videoContainer.classList.add(classTrackingActive);
-      }
+    handleActivationClick () {
+      this.toggleTracking();
     }
 
-    handlePassthroughClick (plot, event) {
-      const btn = event.currentTarget;
-      if (btn.classList.contains(classVideoBtnActive)) {
-        btn.classList.remove(classVideoBtnActive);
-        this.videoContainer.classList.remove(classVideoActive);
-      } else {
-        btn.classList.add(classVideoBtnActive);
-        this.videoContainer.classList.add(classVideoActive);
-      }
+    handlePassthroughClick () {
+      this.toggleVideo();
     }
 
     onTracked (event) {
@@ -5971,6 +5953,32 @@
         ? 'turntable'
         : this.previousDragMode;
       window.Plotly.relayout(this.plotEl, this.plotEl.layout);
+    }
+
+    toggleTracking () {
+      const btn = this.plotEl.querySelector(`a[data-title="${activateButtonName}"]`);
+      if (this.isTracking) {
+        this.stopTracking();
+        btn.classList.remove(classTrackingBtnActive);
+        btn.parentElement.classList.remove(classModebarActive);
+        this.videoContainer.classList.remove(classTrackingActive);
+      } else {
+        this.startTracking();
+        btn.classList.add(classTrackingBtnActive);
+        btn.parentElement.classList.add(classModebarActive);
+        this.videoContainer.classList.add(classTrackingActive);
+      }
+    }
+
+    toggleVideo () {
+      const btn = this.plotEl.querySelector(`a[data-title="${passthroughBtnName}"]`);
+      if (btn.classList.contains(classVideoBtnActive)) {
+        btn.classList.remove(classVideoBtnActive);
+        this.videoContainer.classList.remove(classVideoActive);
+      } else {
+        btn.classList.add(classVideoBtnActive);
+        this.videoContainer.classList.add(classVideoActive);
+      }
     }
   }
 
