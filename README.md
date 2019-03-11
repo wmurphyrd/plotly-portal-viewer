@@ -2,7 +2,10 @@
 
 A [plotly.js](https://github.com/plotly/plotly.js) extension that adds a new option for navigating 3D plots: using your face.
 
-Using JavaScript ML face tracking from the [tracking](https://github.com/eduardolundgren/tracking.js) package,
+![demonstration gif](./readme_files/portal.gif)
+
+Using JavaScript ML face tracking from the [tracking.js](https://github.com/eduardolundgren/tracking.js)
+library,
 the PortalViewer class transforms your screen into a magic portal, creating an artificial sense of
 depth by adjusting the perspective of the rendered plot according the position of your face relative
 to the screen. With Portal View, you can quickly gain an understanding of the 3D structure of a plot

@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // Build a plot
-  window.Plotly.d3.csv('./iris.csv', function (err, rows) {
+  window.Plotly.d3.csv('./birth-death-health-2012.csv', function (err, rows) {
     if (err) {
       throw err
     }
@@ -18,9 +18,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     var trace1 = {
-      x: unpack(rows, 'Petal.Length'),
-      y: unpack(rows, 'Petal.Width'),
-      z: unpack(rows, 'Sepal.Length'),
+      x: unpack(rows, 'birth'),
+      y: unpack(rows, 'death'),
+      z: unpack(rows, 'health'),
+      text: unpack(rows, 'Country'),
+      hovertemplate: [
+        '%{text}',
+        'Births per 1,000: %{x:.1f}',
+        'Deaths per 1,000: %{y:.1f}',
+        'Health spending per 1: %{z:$,.0f}'
+      ].join('<br>'),
       mode: 'markers',
       marker: {
         size: 12,
@@ -29,7 +36,8 @@ window.addEventListener('DOMContentLoaded', () => {
         },
         opacity: 1
       },
-      type: 'scatter3d'
+      type: 'scatter3d',
+      name: ''
     }
 
     var data = [trace1]
@@ -41,21 +49,25 @@ window.addEventListener('DOMContentLoaded', () => {
         t: 30
       },
       scene: {
-        aspectmode: 'cube',
         camera: {
           eye: {
             x: 0,
             y: -2,
             z: 0
-          },
-          center: {
-            x: 0,
-            y: 0,
-            z: 0
           }
+        },
+        xaxis: {
+          title: 'Birth Rate'
+        },
+        yaxis: {
+          title: 'Death Rate'
+        },
+        zaxis: {
+          title: 'Health spending',
+          tickformat: '$,d'
         }
       },
-      title: 'Magic Portal Face Tracking',
+      title: 'Health Expenditures v. Population Determinants - 2012',
       font: {
         color: '#666'
       }
