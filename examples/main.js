@@ -47,6 +47,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     var data = [trace1]
     var layout = {
+      height: document.querySelector('#myDiv').clientHeight,
       margin: {
         l: 0,
         r: 0,
@@ -78,7 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
     // inital layout and config settings are preserved when adding portal view
-    window.Plotly.newPlot('myDiv', data, layout, { responsive: true })
+    window.Plotly.newPlot('myDiv', data, layout)
       // calls myPortalViewer.addToPlot('myDiv')
       .then(addPortalViewerAfterFirstPlot)
   })

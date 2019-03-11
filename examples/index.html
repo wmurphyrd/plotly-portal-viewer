@@ -8,8 +8,16 @@
         left: 0;
         transform: none;
       }
+      body, html, #id-app {
+        height: 100%;
+        margin: 0;
+      }
+      #id-app {
+        display: flex;
+        flex-direction: column;
+      }
       #myDiv {
-        height: 100vh;
+        flex-grow: 1;
       }
       #id-buttons {
         display: flex;
@@ -28,11 +36,11 @@
     </style>
   </head>
   <body>
-    <div id="id-buttons">
-      <button id="id-activate-button">Toggle Portal View</button>
+    <div id="id-app">
+      <div id="id-buttons">
+        <button id="id-activate-button">Toggle Portal View</button>
+      </div>
+      <div id="myDiv"></div>
     </div>
-    <div id="myDiv"></div>
-    <video id="myVideo" class="cl-video-passthrough" width="320" height="240" preload muted autoplay webkit-playsinline playsinline></video>
-    <canvas id="myDebugCanvas" class="cl-video-passthrough" width="320" height="240"></canvas>
   </body>
 </html>
